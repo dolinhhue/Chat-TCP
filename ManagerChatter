@@ -55,14 +55,14 @@ public class ManagerChatter extends JFrame implements Runnable{
 		contentPane.add(panel, BorderLayout.NORTH);
 		panel.setLayout(new GridLayout(0, 2, 0, 0));
 		
-		JLabel lblNewLabel = new JLabel("Manager Port:");
+		JLabel lblNewLabel = new JLabel("Server Port:");
 		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lblNewLabel.setHorizontalAlignment(SwingConstants.RIGHT);
 		panel.add(lblNewLabel);
 		
 		txtServerPort = new JTextField();
 		txtServerPort.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		txtServerPort.setText("12340");
+		txtServerPort.setText("9999");
 		panel.add(txtServerPort);
 		txtServerPort.setColumns(10);
 		
@@ -86,16 +86,17 @@ public class ManagerChatter extends JFrame implements Runnable{
 	                Socket aStaffSocket = srvSocket.accept();
 	                if(aStaffSocket != null){
 	                    bf = new BufferedReader(new InputStreamReader(aStaffSocket.getInputStream()));
-	                String S = bf.readLine();
-	                int pos = S.indexOf(":");
-	                String staffName = S.substring(pos + 1);
-	                ChatPanel p = new ChatPanel(aStaffSocket,"Manager", staffName);
-	                tabbedPane.add(staffName,p);
-	                p.updateUI();;}
-	                Thread.sleep(1000);
+		                String S = bf.readLine();
+		                int pos = S.indexOf(":");
+		                String staffName = S.substring(pos + 1);
+		                ChatPanel p = new ChatPanel(aStaffSocket,"Server", staffName);
+		                tabbedPane.add(staffName,p);
+		                p.updateUI();;}
+		                Thread.sleep(1000);
 	            }catch(Exception e){
 	                e.printStackTrace();
 	            }
 	        }
 
+	}
 }
