@@ -1,11 +1,14 @@
-package tcpsocket;
+import javax.swing.JPanel;
+import java.awt.GridBagLayout;
+import net.miginfocom.swing.MigLayout;
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
+import javax.swing.border.TitledBorder;
 
 import java.io.*;
 import java.net.Socket;
-import java.io.BufferedReader;
-import javax.swing.border.TitledBorder;
-import java.io.DataOutputStream;
 
+import javax.swing.border.TitledBorder;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.border.TitledBorder;
@@ -13,21 +16,24 @@ import java.awt.GridLayout;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class form extends JPanel {
+public class ChatPanel extends JPanel {
 	Socket socket = null;
     BufferedReader bf = null;
     DataOutputStream os = null;
-    OutputThread t = null;
+    Output t = null;
     String sender;
     String reciever;
     JTextArea txtMessages;
+    final File[] fileToSend = new File[1];
 	/**
 	 * Create the panel.
 	 */
-	public form(Socket s,String sender, String reciever) {
+	public ChatPanel(Socket s,String sender, String reciever) {
 		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel = new JPanel();
@@ -57,6 +63,24 @@ public class form extends JPanel {
 				}
 			}
 		});
+		
+		JButton btnSendFile = new JButton("Ch\u1ECDn \u0111\u01B0\u1EDDng d\u1EABn");
+		btnSendFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFileChooser file_chooser = new JFileChooser();
+				file_chooser.setApproveButtonText("Send");
+				file_chooser.setMultiSelectionEnabled(true);
+				int check_status = file_chooser.showOpenDialog(null);
+				if(check_status != JFileChooser.APPROVE_OPTION) {
+					txtMessages.append("\nPlease choose a file to send first!");
+				}else {
+					File chosen_file = file_chooser.getSelectedFile();
+					fileToSend[0] = chosen_file;
+					txtMessages.append("\nSend file " + fileToSend[0].getName() + " Success!!");
+				}
+			}
+		});
+		panel.add(btnSendFile);
 		panel.add(btnSend);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
@@ -71,7 +95,9 @@ public class form extends JPanel {
         try{
             bf = new BufferedReader( new InputStreamReader(socket.getInputStream()));
             os = new DataOutputStream(socket.getOutputStream());
-            t = new OutputThead(s, txtMessages, sender, reciever);
+            
+            
+            t = new Output(s, txtMessages, sender, reciever);
             t.start();
         }
         catch(Exception e){ 
@@ -80,5 +106,6 @@ public class form extends JPanel {
 	public JTextArea getTxtMessages(){
         return this.txtMessages;
     }
+	
 }
 
